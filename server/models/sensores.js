@@ -4,27 +4,13 @@ let Schema = mongoose.Schema;
 
 let sensoresSchema = new Schema({
 
-    module1: {
-        temperature: Number,
-        humidity: Number,
-        ammonia: Number,
+    temperature: [Number],
+    humidity: [Number],
+    ammonia: [Number],
+    fire: [Number],
+    others: {
         light: Number,
         rain: Number
-    },
-    module2: {
-        temperature: Number,
-        humidity: Number,
-        ammonia: Number
-    },
-    module3: {
-        temperature: Number,
-        humidity: Number,
-        ammonia: Number
-    },
-    module4: {
-        temperature: Number,
-        humidity: Number,
-        ammonia: Number
     },
     date: {
         day: String,

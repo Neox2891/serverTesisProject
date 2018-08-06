@@ -6,6 +6,9 @@ let Schema = mongoose.Schema;
 
 let notificarSchema = new Schema({
     notificacion: String,
+    module: String,
+    parameter: String,
+    data: Number,
     date: String,
     email: String
 });

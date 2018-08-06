@@ -7,5 +7,5 @@
     - Busqueda de informacion por fecha DB...
 
 ------------------------------------------------------
-Para instalas todos los paquetes ejecutar: npm install
+Para instalar todos los modulos de node ejecutar: npm install
 ------------------------------------------------------

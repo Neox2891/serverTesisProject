@@ -15,27 +15,13 @@ app.post('/sensores/datos', (req, res) => {
     let body = req.body;
 
     let sensores = new Sensores({
-        module1: {
-            temperature: body.module1.temperature,
-            humidity: body.module1.humidity,
-            ammonia: body.module1.ammonia,
-            light: body.module1.light,
-            rain: body.module1.rain
-        },
-        module2: {
-            temperature: body.module2.temperature,
-            humidity: body.module2.humidity,
-            ammonia: body.module2.ammonia
-        },
-        module3: {
-            temperature: body.module3.temperature,
-            humidity: body.module3.humidity,
-            ammonia: body.module3.ammonia,
-        },
-        module4: {
-            temperature: body.module4.temperature,
-            humidity: body.module4.humidity,
-            ammonia: body.module4.ammonia,
+        temperature: body.temperature,
+        humidity: body.humidity,
+        ammonia: body.ammonia,
+        fire: body.fire,
+        others: {
+            rain: body.others.rain,
+            light: body.others.light
         },
         date: {
             day: new Date().getDay(),

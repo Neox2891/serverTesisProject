@@ -12,6 +12,7 @@ let sensoresSchema = new Schema({
         light: Number,
         rain: Number
     },
+    dateSearch: String,
     date: {
         day: String,
         numberDay: String,

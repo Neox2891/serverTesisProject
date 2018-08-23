@@ -1,7 +1,6 @@
 const { io } = require('../server');
 const Notificar = require('../models/notificacion');
 const nodemailer = require('nodemailer');
-const fs = require('fs');
 
 io.on('connection', (client) => {
 
@@ -22,6 +21,10 @@ io.on('connection', (client) => {
         //console.log(typeof data);
         console.log(JSON.stringify(data, null, 2));
         client.broadcast.emit('dataEmit', data);
+        callback({
+            ok: true,
+            msg: 'datos recibidos!'
+        });
     });
 
     //  Actualiza grafica cada vez que se guardan datos en la DB

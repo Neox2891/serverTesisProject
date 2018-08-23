@@ -14,7 +14,11 @@ socket.on('mensajeBienvenida', (data, callback) => {
 
 // Se recibe los datos en tiempo real
 socket.on('dataEmit', (data, callback) => {
-    console.log(data);
+    console.log(data, '!!!!!!');
+    if (data) {
+        document.getElementById("temperatura").innerHTML = `${data.temperature}°C`;
+        document.getElementById("humedad").innerHTML = `${data.humidity}%`;
+    }
 });
 
 // Actualizar grafica cada ves que se guardan en la DB

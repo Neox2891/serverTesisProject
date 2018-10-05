@@ -6,7 +6,7 @@ let sensoresSchema = new Schema({
 
     temperature: [Number],
     humidity: [Number],
-    ammonia: [Number],
+    airQuality: [Number],
     fire: [Number],
     others: {
         light: Number,

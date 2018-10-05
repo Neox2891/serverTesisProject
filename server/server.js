@@ -21,8 +21,8 @@ app.use(require('./routes/index'));
 
 module.exports.io = socketIO(server);
 require('./sockets/socket');
-/*
-mongoose.connect(process.env.URL_DB, { useNewUrlParser: true }, (err) => {
+
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err) => {
 
     if (err) {
         throw err;
@@ -30,7 +30,7 @@ mongoose.connect(process.env.URL_DB, { useNewUrlParser: true }, (err) => {
 
     console.log('Conectado con base de datos!');
 });
-*/
+
 server.listen(process.env.PORT, (err) => {
 
     if (err) {

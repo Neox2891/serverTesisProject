@@ -73,7 +73,7 @@ app.post('/sensores/datos', (req, res) => {
     let sensores = new Sensores({
         temperature: body.temperature,
         humidity: body.humidity,
-        ammonia: body.ammonia,
+        airQuality: body.airQuality,
         fire: body.fire,
         others: {
             rain: body.others.rain,
@@ -119,10 +119,9 @@ app.get('/sensores/datos/mes', (req, res) => {
                 err
             })
         }
-        console.log(sensorDB);
+        // console.log(sensorDB);
         let tempArray = [];
         let resultado = 0;
-        let resultadoAutomatico = 0;
 
         sensorDB.forEach((element, index) => {
             if (element.date.month === '8') {
@@ -133,14 +132,9 @@ app.get('/sensores/datos/mes', (req, res) => {
             }
         });
         console.log(tempArray);
-        tempArray.forEach(element => {
-            resultadoAutomatico += element;
-        });
-        console.log(resultadoAutomatico);
         res.status(200).json({
             ok: true,
-            resultadoManual: resultado / 48,
-            resultadoAuto: resultadoAutomatico / tempArray.length
+            resultado: resultado / tempArray.length
         });
     });
 

@@ -18,12 +18,13 @@ io.on('connection', (client) => {
 
     // Comunicacion en tiempo real
     client.on('dataSensors', (data, callback) => {
-        //console.log(typeof data);
-        console.log(JSON.stringify(data, null, 2));
-        client.broadcast.emit('dataEmit', data);
+        let dataSensor = JSON.parse(data);
+        // console.log(JSON.stringify(data, null, 2));
+        client.broadcast.emit('dataEmit', dataSensor);
         callback({
             ok: true,
-            msg: 'datos recibidos!'
+            msg: 'datos recibidos!',
+            event: 'dataEmit'
         });
     });
 
@@ -96,8 +97,8 @@ io.on('connection', (client) => {
         });
     });
 
-    client.on('nfAmmonia', (data, cb) => {
-        client.broadcast.emit('nfAmmo', data);
+    client.on('nfAirQuiality', (data, cb) => {
+        client.broadcast.emit('nfAirQuiality', data);
     });
 
     client.on('nfFire', (data, cb) => {

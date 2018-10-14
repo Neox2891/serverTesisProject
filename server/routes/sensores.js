@@ -1,16 +1,15 @@
 const express = require('express');
 const Sensores = require('../models/sensores');
+let { rezoned } = require('../config/config');
+const { getDataDay } = require('../helpers/getDataDay');
 const app = express();
 
-// obtener datos del dia
+let date = rezoned().date[0];
+
+// obtener datos del dia / aaaa-mm-dd
 app.get('/sensores/datos', (req, res) => {
 
-    let body = req.body;
-
-    let dates = new Date();
-    let dateNow = `${dates.getDay()}/${dates.getMonth()}/${dates.getFullYear()}`;
-
-    Sensores.find({ dateSearch: dateNow }, 'temperature humidity ammonia others')
+    Sensores.find({ dateSearch: date })
         .exec((err, sensorDB) => {
             if (err) {
                 return res.status(404).json({
@@ -26,14 +25,16 @@ app.get('/sensores/datos', (req, res) => {
                 });
             }
 
+            const metrics = getDataDay(sensorDB);
+
             res.status(200).json({
                 ok: true,
-                sensorDB
+                metrics
             });
         });
 });
 
-// Buscar datos por fecha
+// Buscar datos por fecha / aaaa-mm-dd ejemplo: 1991-11-28
 app.get('/sensores/datos/search', (req, res) => {
 
     let search = req.query.dateSearch;
@@ -56,87 +57,45 @@ app.get('/sensores/datos/search', (req, res) => {
                 });
             }
 
+            const metrics = getDataDay(sensorDB);
+
             res.status(200).json({
                 ok: true,
-                sensorDB
+                metrics
             });
         });
 });
 
-// Guardar datos
-app.post('/sensores/datos', (req, res) => {
+//obtener datos por dia
+app.get('/sensores/datos/:mes', (req, res) => {
 
-    let body = req.body;
+    let month = req.params.mes;
 
-    let date = new Date();
+    const months = [{ id: 1, month: 'enero' }, { id: 2, month: 'febrero' }, { id: 3, month: 'marzo' }, { id: 4, month: 'abril' }, { id: 5, month: 'mayo' }, { id: 6, month: 'junio' }, { id: 7, month: 'julio' },
+        { id: 8, month: 'agosto' }, { id: 9, month: 'septiembre' }, { id: 10, month: 'octubre' }, { id: 11, month: 'noviembre' },
+        { id: 12, month: 'diciembre' }
+    ];
 
-    let sensores = new Sensores({
-        temperature: body.temperature,
-        humidity: body.humidity,
-        airQuality: body.airQuality,
-        fire: body.fire,
-        others: {
-            rain: body.others.rain,
-            light: body.others.light
-        },
-        dateSearch: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
-        date: {
-            day: date.getDay(),
-            numberDay: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
-            fullDate: new Date()
-        },
-        actuadores: body.actuadores
-    });
+    let monthid = months.find(element => element.month === month);
 
-    sensores.save((err, sensoresDb) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            });
-        }
+    Sensores.find({ 'date.month': monthid.id })
+        .exec((err, sensorDB) => {
 
-        res.status(201).json({
-            ok: true,
-            sensoresDb
-        });
-    });
-
-});
-
-//obtener datos por mes
-app.get('/sensores/datos/mes', (req, res) => {
-
-    Sensores.find((err, sensorDB) => {
-
-        if (err) {
-            return res.status(501).json({
-                ok: false,
-                err
-            })
-        }
-        // console.log(sensorDB);
-        let tempArray = [];
-        let resultado = 0;
-
-        sensorDB.forEach((element, index) => {
-            if (element.date.month === '8') {
-                element.temperature.forEach(element => {
-                    resultado += element;
-                    tempArray.push(element);
-                });
+            if (err) {
+                return res.status(501).json({
+                    ok: false,
+                    err
+                })
             }
+            // console.log(sensorDB);
+
+            metrics.month = monthid.month;
+
+            res.status(200).json({
+                ok: true,
+                metrics
+            });
         });
-        console.log(tempArray);
-        res.status(200).json({
-            ok: true,
-            resultado: resultado / tempArray.length
-        });
-    });
 
 });
 

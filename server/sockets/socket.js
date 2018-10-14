@@ -1,15 +1,17 @@
 const { io } = require('../server');
 const Notificar = require('../models/notificacion');
+const Sensores = require('../models/sensores');
 const nodemailer = require('nodemailer');
+let { rezoned } = require('../config/config');
+
+let counter = 0;
 
 io.on('connection', (client) => {
 
-    client.on('connect', () => {
-        console.log('Usuario conectado');
-    });
+    console.log('Usuario conectado');
 
     client.on('disconnect', () => {
-        console.log('Usuario conectado');
+        console.log('Usuario desconectado');
     });
 
     client.emit('mensajeBienvenida', {
@@ -18,24 +20,60 @@ io.on('connection', (client) => {
 
     // Comunicacion en tiempo real
     client.on('dataSensors', (data, callback) => {
-        let dataSensor = JSON.parse(data);
-        // console.log(JSON.stringify(data, null, 2));
-        client.broadcast.emit('dataEmit', dataSensor);
+
+        let dataParser = JSON.parse(data);
+        dataSensors = dataParser;
+        // console.log(dataParser);
+        // console.log(rezoned());
+        client.broadcast.emit('dataEmit', data);
+
         callback({
             ok: true,
             msg: 'datos recibidos!',
-            event: 'dataEmit'
+            event: 'dataSensors - dataEmit'
         });
     });
 
-    //  Actualiza grafica cada vez que se guardan datos en la DB
     client.on('dataDb', (data, callback) => {
-        client.broadcast.emit('dataDbEmit', data);
-        callback({
-            ok: true,
-            msg: 'datos recibidos!'
+
+        let dataParser = JSON.parse(data);
+
+        let sensores = new Sensores({
+            temperature: dataParser.temperature,
+            humidity: dataParser.humidity,
+            airQuality: dataParser.airQuality,
+            fire: dataParser.fire,
+            others: {
+                rain: dataParser.others.rain,
+                light: dataParser.others.light
+            },
+            dateSearch: rezoned().date[0],
+            date: {
+                day: rezoned().day,
+                month: rezoned().month,
+                year: rezoned().year,
+                hours: rezoned().hour,
+                minutes: rezoned().minute,
+                fullDate: rezoned().date.join('T')
+            },
+            actuadores: dataParser.actuadores
         });
+
+        sensores.save((err, sensoresDb) => {
+            if (err) {
+                return console.log(err);;
+            }
+            callback({
+                ok: true,
+                msg: 'datos recibidos!',
+                event: 'dataDb'
+            });
+        });
+        //  Actualiza grafica cada vez que se guardan datos en la DB
+        client.broadcast.emit('dbEmit', data);
+
     });
+
     // notificaciones
     client.on('nfTemperature', (data, cb) => {
         client.broadcast.emit('nfTemp', data);
@@ -143,6 +181,4 @@ let sendMailNf = (msg, subject, parameter, modulo) => {
         console.log('Message sent: %s', info.messageId);
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
-
-
 }

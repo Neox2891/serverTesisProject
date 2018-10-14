@@ -14,12 +14,11 @@ let sensoresSchema = new Schema({
     },
     dateSearch: String,
     date: {
-        day: String,
-        numberDay: String,
-        month: String,
-        year: String,
-        hours: String,
-        minutes: String,
+        day: Number,
+        month: Number,
+        year: Number,
+        hours: Number,
+        minutes: Number,
         fullDate: String
     },
     actuadores: [Boolean]

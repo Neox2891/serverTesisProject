@@ -4,8 +4,6 @@ const Sensores = require('../models/sensores');
 const nodemailer = require('nodemailer');
 let { rezoned } = require('../config/config');
 
-let counter = 0;
-
 io.on('connection', (client) => {
 
     console.log('Usuario conectado');
@@ -21,10 +19,6 @@ io.on('connection', (client) => {
     // Comunicacion en tiempo real
     client.on('dataSensors', (data, callback) => {
 
-        let dataParser = JSON.parse(data);
-        dataSensors = dataParser;
-        // console.log(dataParser);
-        // console.log(rezoned());
         client.broadcast.emit('dataEmit', data);
 
         callback({

@@ -2,6 +2,7 @@ const express = require('express');
 const Sensores = require('../models/sensores');
 let { rezoned } = require('../config/config');
 const { getDataDay } = require('../helpers/getDataDay');
+const { getDataMonth } = require('../helpers/getDataMonth');
 const app = express();
 
 let date = rezoned().date[0];
@@ -67,18 +68,23 @@ app.get('/sensores/datos/search', (req, res) => {
 });
 
 //obtener datos por dia
-app.get('/sensores/datos/:mes', (req, res) => {
+app.get('/sensores/datos/:mesAno', (req, res) => {
 
-    let month = req.params.mes;
+    let mesAno = req.params.mesAno.split('-');
 
-    const months = [{ id: 1, month: 'enero' }, { id: 2, month: 'febrero' }, { id: 3, month: 'marzo' }, { id: 4, month: 'abril' }, { id: 5, month: 'mayo' }, { id: 6, month: 'junio' }, { id: 7, month: 'julio' },
-        { id: 8, month: 'agosto' }, { id: 9, month: 'septiembre' }, { id: 10, month: 'octubre' }, { id: 11, month: 'noviembre' },
-        { id: 12, month: 'diciembre' }
+    let month = mesAno[0];
+    let year = mesAno[1];
+
+    const months = [{ id: 1, month: 'enero', days: 31 }, { id: 2, month: 'febrero', days: 28 },
+        { id: 3, month: 'marzo', days: 31 }, { id: 4, month: 'abril', days: 30 }, { id: 5, month: 'mayo', days: 31 },
+        { id: 6, month: 'junio', days: 30 }, { id: 7, month: 'julio', days: 31 }, { id: 8, month: 'agosto', days: 31 },
+        { id: 9, month: 'septiembre', days: 30 }, { id: 10, month: 'octubre', days: 31 },
+        { id: 11, month: 'noviembre', days: 30 }, { id: 12, month: 'diciembre', days: 31 }
     ];
 
     let monthid = months.find(element => element.month === month);
 
-    Sensores.find({ 'date.month': monthid.id })
+    Sensores.find({ 'date.month': monthid.id, 'date.year': year })
         .exec((err, sensorDB) => {
 
             if (err) {
@@ -87,16 +93,23 @@ app.get('/sensores/datos/:mes', (req, res) => {
                     err
                 })
             }
-            // console.log(sensorDB);
 
-            metrics.month = monthid.month;
+            if (sensorDB.length === 0) {
+                return res.json({
+                    ok: false,
+                    err: {
+                        message: 'Datos no encontrados'
+                    }
+                });
+            }
+
+            let metrics = getDataMonth(sensorDB, monthid.days);
 
             res.status(200).json({
                 ok: true,
                 metrics
             });
         });
-
 });
 
 module.exports = app;

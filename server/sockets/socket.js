@@ -16,9 +16,9 @@ io.on('connection', (client) => {
         admin: 'Bienvenido'
     });
 
-    // Comunicacion en tiempo real
+    // Rx: Comunicacion en tiempo real
     client.on('dataSensors', (data, callback) => {
-
+        // Tx: envio de datos al front-end
         client.broadcast.emit('dataEmit', data);
 
         callback({
@@ -27,7 +27,7 @@ io.on('connection', (client) => {
             event: 'dataSensors - dataEmit'
         });
     });
-
+    // Rx: guarda datos en la base de datos cada 30 minutos
     client.on('dataDb', (data, callback) => {
 
         let dataParser = JSON.parse(data);

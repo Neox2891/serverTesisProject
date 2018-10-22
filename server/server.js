@@ -5,10 +5,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
 const http = require('http');
+const cors = require('cors');
 const app = express();
 
 let server = http.createServer(app);
 
+app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 

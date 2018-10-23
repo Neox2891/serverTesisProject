@@ -18,7 +18,8 @@
         "luxon": "^1.4.3",
         "mongoose": "^5.2.5",
         "nodemailer": "^4.6.7",
-        "socket.io": "^2.1.1"
+        "socket.io": "^2.1.1",
+        "socket.io-client": "^2.1.1"
     },
     "devDependencies": {
         "@babel/core": "^7.1.2",

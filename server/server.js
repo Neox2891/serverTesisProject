@@ -6,9 +6,23 @@ const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
 const http = require('http');
 const cors = require('cors');
+const webpack = require('webpack');
+const webpackConfig = require('../webpack.config');
+const compiler = webpack(webpackConfig);
+
 const app = express();
 
 let server = http.createServer(app);
+
+// webpack hmr
+app.use(
+    require('webpack-dev-middleware')(compiler, {
+        noInfo: true,
+        publicPath: webpackConfig.output.publicPath
+    })
+);
+
+app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(cors());
 // parse application/x-www-form-urlencoded

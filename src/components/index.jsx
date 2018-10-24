@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import Socket from './Sockets.jsx';
-
-const socket = io('http://localhost:3000');
+import { hot } from 'react-hot-loader';
 
 class App extends Component {
 
@@ -26,13 +25,9 @@ class App extends Component {
                 <h1 onClick={this.handleOnClick}> Hola React! </h1>
                 <Socket></Socket>
             </div>
-        
-            
-
-       
         )
         }
     }
 
-export default App
+export default hot(module)(App)
 

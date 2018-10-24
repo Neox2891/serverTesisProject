@@ -8,13 +8,12 @@ class Socket extends Component {
         super(...props)
 
         this.state = {
-            response: [],
+            response: false,
             endpoint: "http://localhost:3000"
           };
         
-            
     }
-    
+
     componentDidMount() {
         const { endpoint } = this.state;
         const socket = socketIOClient(endpoint);
@@ -27,7 +26,7 @@ class Socket extends Component {
       <div style={{ textAlign: "center" }}>
         {response
           ? <p>
-              The temperature in Florence is: {this.state.response.admin} °F
+              Mensaje del administrador: {this.state.response.admin}
             </p>
           : <p>Loading...</p>}
       </div>

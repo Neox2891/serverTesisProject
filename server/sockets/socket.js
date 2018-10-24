@@ -16,11 +16,6 @@ io.on('connection', (client) => {
         admin: 'Bienvenido'
     });
 
-
-    // client.emit('mensajeBienvenida', {
-    //     admin: 'Bienvenido'
-    // });
-
     // Rx: Comunicacion en tiempo real
     client.on('dataSensors', (data, callback) => {
         // Tx: envio de datos al front-end
